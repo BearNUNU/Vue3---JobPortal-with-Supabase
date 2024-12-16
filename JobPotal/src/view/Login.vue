@@ -47,6 +47,7 @@ input {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-bottom: 5px;
 }
 
 button {
