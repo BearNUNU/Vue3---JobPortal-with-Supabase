@@ -1,36 +1,101 @@
 <template>
-<div class="form-container">
-    <form calss="form-group" @submit.prevent="handleSingUp"> 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Email" required v-model="id">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Password" required v-model="password">
-        <label for="tel">Phone</label>
-        <input type="tel" id="tel" name="tel" placeholder="전화번호" required v-model="tel">
-    </form>
-     <div class="form-group">
-        <label for="introduce">자기소개</label>
-        <textarea id="introduce" name="introduce" placeholder="자기소개" required v-model="introduce"></textarea>
-     </div>
-     <button type="submit">회원가입</button>
-</div>
+    <div class="form-container">
+      <form @submit.prevent="handleSignup">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            placeholder="이메일 입력"
+            required
+            v-model="email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            placeholder="비밀번호 입력"
+            required
+            v-model="password"
+          />
+        </div>
+        <div class="form-group">
+          <label for="tel">Phone</label>
+          <input 
+            type="tel" 
+            id="tel" 
+            placeholder="010-1234-5678"
+            required
+            v-model="tel"
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input 
+            type="name" 
+            id="name" 
+            placeholder="이름 입력"
+            required
+            v-model="name"
+          />
+        </div>
+          <div class="form-group">
+          <label for="address">Address</label>
+          <input 
+            type="address" 
+            id="address" 
+            placeholder="주소 입력"
+            required
+            v-model="address"
+          />
+        </div>
+        <div class="form-group">
+          <label for="introduce">자기소개</label>
+          <textarea id="introduce" v-model="introduce"></textarea>
+        </div>
+        <button type="submit">회원가입</button>
+      </form>
+    </div>
   </template>
   
-  <script>
+  <script setup>
+  import supabase from '../supabase';
   import { ref } from 'vue';
-  const id = ref('');
+
+  const email = ref('');
   const password = ref('');
   const tel = ref('');
   const introduce = ref('');
+  const name = ref('');
+  const address = ref('');
 
+  const handleSignup = async () => {
+  const { data, error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value,
+  })
 
-  const handleSingUp = () => {
-    console.log(id.value, password.value, tel.value, introduce.value);
-    if(id.value === '' || password.value === '' || tel.value === '' || introduce.value === ''){
-        alert('모든 입력란을 입력해주세요');
-        return;
-    }
-  };
+  if(error) {
+    alert(error.message)
+  } else {
+    console.log('회원가입 성공')
+    const { error } = await supabase
+      .from('user_table')
+      .insert({ 
+        tel: tel.value,
+        introduce: introduce.value,
+        name: name.value,
+        address: address.value,
+      })
+      if(error) { 
+        alert('에러')
+        console.log(error)
+      }
+  }
+
+}
 
   </script>
   
