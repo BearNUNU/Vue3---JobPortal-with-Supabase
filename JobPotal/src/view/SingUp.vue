@@ -1,7 +1,10 @@
 <template>
-    <div class="form-container">
-      <form @submit.prevent="handleSignup">
-        <div class="form-group">
+    <div class="loading_info" v-if="isLoading">
+        <p>회원가입 중입니다...</p>
+    </div>
+        <div class="form-container">
+            <form @submit.prevent="handleSignup">
+                <div class="form-group">
           <label for="email">Email</label>
           <input 
             type="email" 
@@ -63,6 +66,9 @@
   <script setup>
   import supabase from '../supabase';
   import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const email = ref('');
   const password = ref('');
@@ -71,7 +77,10 @@
   const name = ref('');
   const address = ref('');
 
+  const isLoading = ref(false);
+
   const handleSignup = async () => {
+    isLoading.value = true;
   const { data, error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value,
@@ -94,11 +103,21 @@
         console.log(error)
       }
   }
-
+  router.push('/');
+  isLoading.value = false;
 }
 
   </script>
   
   <style scoped lang="scss">
   @use "../style/form.scss";
+  .loading_info {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0, 0.7);
+    color: #fff;
+    display: grid;
+    place-items: center;
+  }
   </style>
