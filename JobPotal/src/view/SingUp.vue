@@ -1,4 +1,5 @@
 <template>
+    <div>
     <div class="loading_info" v-if="isLoading">
         <p>회원가입 중입니다...</p>
     </div>
@@ -61,6 +62,7 @@
         <button type="submit">회원가입</button>
       </form>
     </div>
+</div>
   </template>
   
   <script setup>
@@ -102,8 +104,8 @@ import { useRouter } from 'vue-router';
         alert('에러')
         console.log(error)
       }
+      router.push('/');
   }
-  router.push('/');
   isLoading.value = false;
 }
 
