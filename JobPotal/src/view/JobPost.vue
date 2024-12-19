@@ -99,7 +99,7 @@
 </template>
   
 <script setup>
-import {ref, onMounted, onUnmounted} from 'vue';
+import {ref, onMounted, onUnmounted, watch} from 'vue';
   import { Icon } from '@iconify/vue';
   import { useRouter } from 'vue-router';
   import { useAuth} from "../auth/auth.js";
@@ -111,7 +111,7 @@ import supabase from "../supabase.js";
 const isLoading = ref(false)
   const title = ref('');
   const todo = ref('');
-  const pay_rule = ref('');
+  const pay_rule = ref('시급');
   const pay = ref('');
   const desc = ref('');
   const company_name = ref('');
@@ -119,9 +119,9 @@ const isLoading = ref(false)
   const tel = ref('');
   const previewImage = ref(null)
 
+
 const handleSubmit = async () => {
   isLoading.value = true;
-
   const { error } = await supabase
       .from('job_posts')
       .insert({
@@ -141,7 +141,6 @@ const handleSubmit = async () => {
     alert('등록 성공');
     router.push('/job-list');
   }
-
   isLoading.value = false;
 }
 
@@ -222,5 +221,15 @@ onMounted(async()=>{
   .form-group:has(label[for=photo]) {
     padding-bottom: 25px;
     border-bottom: 5px solid #ccc;
+  }
+
+  .loading_info {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0, 0.7);
+    color: #fff;
+    display: grid;
+    place-items: center;
   }
 </style>

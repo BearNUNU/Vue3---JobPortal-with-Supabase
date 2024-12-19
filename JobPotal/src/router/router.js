@@ -1,42 +1,41 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../view/Login.vue';
-import SingUp from '../view/SingUp.vue';
+import SignUp from '../view/SignUp.vue';
 import JobList from '../view/JobList.vue';
 import JobDetail from '../view/JobDetail.vue';
 import JobPost from '../view/JobPost.vue';
 import UserProfile from '../view/UserProfile.vue';
 
 const routes = [
-    { 
-      path: '/', 
-      component: Login 
+    {
+        path: '/',
+        component: Login
     },
-    { 
-      path: '/signup', 
-      component: SingUp 
+    {
+        path: '/signup',
+        component: SignUp
     },
-    { 
-      path: '/job-post', 
-      component: JobPost
+    {
+        path: '/job-post',
+        component: JobPost
     },
-    { 
-      path: '/job-list', 
-      component: JobList
-    },  
-    { 
-      path: '/job-detail', 
-      component: JobDetail
+    {
+        path: '/job-list',
+        component: JobList
     },
-    { 
-      path: '/user-profile', 
-      component: UserProfile
+    {
+        path: '/job-detail',
+        component: JobDetail
     },
-  ]
-  
-  const router = createRouter({
+    {
+        path: '/user-profile',
+        component: UserProfile
+    },
+]
+
+const router = createRouter({
     history: createWebHistory(),
     routes,
-  })
-  
-  export default router
+})
 
+export default router

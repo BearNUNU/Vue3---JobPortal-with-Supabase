@@ -37,7 +37,7 @@ const handleLogin = async() => {
   if(error) {
     alert(error.message)
   } else {
-    router.push('/joblist');
+    router.push('/job-list');
   }
   isLoading.value = false;
 }
