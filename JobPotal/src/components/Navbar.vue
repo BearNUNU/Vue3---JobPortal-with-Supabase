@@ -16,7 +16,7 @@
 
     <!-- job-detail, user-profile 좌측 뒤로가기 아이콘 -->
     <router-link
-        v-if="currentPath === '/job-detail' || currentPath === '/user-profile'"
+        v-if="currentPath.startsWith('/job-detail') || currentPath === '/user-profile'"
         to="/job-list"
         class="btn-close"
     >
@@ -28,18 +28,6 @@
       />
     </router-link>
 
-    <router-link
-        v-if="currentPath === '/job-detail' || currentPath === '/user-profile'"
-        to="/job-list"
-        class="btn-close"
-    >
-      <Icon
-          icon="ic:baseline-arrow-back"
-          width="24"
-          height="24"
-          style="color: #1e1e1e"
-      />
-    </router-link>
     <!-- job-list 우측에 배치되는 프로필, 글쓰기 아이콘 -->
     <div class="right-icons" v-if="currentPath === '/job-list'">
       <router-link to="/user-profile">
@@ -61,9 +49,9 @@
 </template>
 
 <script setup>
-import {Icon} from '@iconify/vue';
-import {useRoute} from 'vue-router';
-import {watch, ref} from 'vue';
+import { Icon } from '@iconify/vue';
+import { useRoute } from 'vue-router';
+import { watch, ref } from 'vue';
 
 let route = useRoute();
 let currentPath = route.path;
@@ -74,13 +62,13 @@ watch(route, (newPath) => {
   console.log(currentPath);
 
   // 경로 별로 제목을 다르게 설정
-  if (currentPath === '/') {
+  if(currentPath === '/') {
     title.value = '로그인';
   } else if (currentPath === '/signup') {
     title.value = '회원가입';
   } else if (currentPath === '/job-list') {
     title.value = '땅콩알바';
-  } else if (currentPath === '/job-detail') {
+  } else if (currentPath.startsWith('/job-detail')) {
     title.value = '상세보기';
   } else if (currentPath === '/job-post') {
     title.value = '구인등록'
@@ -102,12 +90,10 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-
   h1 {
     font-size: 16px;
     color: var(--text-color-dark);
   }
-
   .btn-close {
     position: absolute;
     left: 15px;
