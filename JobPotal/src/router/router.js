@@ -7,18 +7,36 @@ import JobPost from '../view/JobPost.vue';
 import UserProfile from '../view/UserProfile.vue';
 
 const routes = [
-    { path: '/', component: Login },
-    { path: '/singup', component: SingUp },
-    { path: '/joblist', component: JobList },
-    { path: '/jobdetail', component: JobDetail },
-    { path: '/jobpost', component: JobPost },
-    { path: '/userprofile', component: UserProfile },
-]
-
-const router = createRouter({
+    { 
+      path: '/', 
+      component: Login 
+    },
+    { 
+      path: '/signup', 
+      component: SingUp 
+    },
+    { 
+      path: '/job-post', 
+      component: JobPost
+    },
+    { 
+      path: '/job-list', 
+      component: JobList
+    },  
+    { 
+      path: '/job-detail', 
+      component: JobDetail
+    },
+    { 
+      path: '/user-profile', 
+      component: UserProfile
+    },
+  ]
+  
+  const router = createRouter({
     history: createWebHistory(),
     routes,
-})
-
-export default router;
+  })
+  
+  export default router
 

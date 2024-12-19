@@ -1,10 +1,46 @@
 <template>
-    <nav>
-        <h1>{{ title }}</h1>
-        <router-link to="/joblist" class="btn-close"  v-if="currentPath === '/'||currentPath === '/singup'||currentPath === '/jobpost'">
-            <Icon icon="material-symbols:close" width="24" height="24" style="color: #1e1e1e"/>
-        </router-link>
-        <div class="right-icons" v-if="currentPath === '/joblist'">
+  <nav>
+    <h1>{{ title }}</h1>
+    <router-link 
+      v-if="currentPath === '/' 
+          || currentPath === '/signup' 
+          || currentPath === '/job-post'"
+      to="/job-list" 
+      class="btn-close"
+    >
+      <Icon 
+        icon="material-symbols:close" 
+        width="24"
+        style="color: #1e1e1e;"
+      />
+    </router-link>
+
+    <router-link 
+      v-if="currentPath === '/jobdetail' || currentPath === '/userprofile'"
+      to="/job-list" 
+      class="btn-close"
+    >
+      <Icon 
+        icon="ic:baseline-arrow-back" 
+        width="24" 
+        height="24"  
+        style="color: 1e1e1e" 
+      />
+    </router-link>
+    
+    <router-link 
+	      v-if="currentPath === '/jobdetail' || currentPath === '/userprofile'"
+	      to="/job-list" 
+	      class="btn-close"
+	    >
+	      <Icon 
+	        icon="ic:baseline-arrow-back" 
+	        width="24" 
+	        height="24"  
+	        style="color: 1e1e1e" 
+	      />
+	    </router-link>
+    <div class="right-icons" v-if="currentPath === '/joblist'">
       <router-link to="/user-profile">
         <Icon 
           icon="teenyicons:user-circle-solid" 
@@ -12,7 +48,7 @@
           style="color: #1e1e1e;"
         />
       </router-link>
-      <router-link to="/job-post">
+      <router-link to="/jobpost">
         <Icon 
         icon="mdi:pencil-outline"  
           width="24"
@@ -20,41 +56,44 @@
         />
       </router-link>
     </div> 
-    </nav>
+  </nav>
 </template>
-
+  
 <script setup>
-import { Icon } from '@iconify/vue';
-import { watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { ref } from 'vue';
+  import { Icon } from '@iconify/vue';
+  import { useRoute } from 'vue-router';
+  import { watch, ref } from 'vue';
 
-let route = useRoute();
-let currentPath = route.path;
-let title = ref('');
+  let route = useRoute();
+  let currentPath = route.path;
+  let title = ref('');
 
-watch(route, (newPath) => {
+  watch(route, (newPath) => {
     currentPath = newPath.path;
-    if (currentPath === '/') {
-        title.value = '로그인';
-    } else if (currentPath === '/singup') {
-        title.value = '회원가입';
-    } else if (currentPath === '/joblist') {
-        title.value = '채용공고';
-    } else if (currentPath === '/jobdetail') {
-        title.value = '채용공고 상세';
-    } else if (currentPath === '/jobpost') {
-        title.value = '채용공고 작성';
-    } else if (currentPath === '/userprofile') {
-        title.value = '회원정보';
-    }
     console.log(currentPath);
-});
-</script>
+    
 
+    if(currentPath === '/') {
+      title.value = '로그인'; 
+    } else if (currentPath === '/signup') {
+      title.value = '회원가입';
+    } else if (currentPath === '/joblist') {
+      title.value = '땅콩알바';
+    } else if (currentPath === '/job-detail') {
+      title.value = '상세보기';
+    } else if (currentPath === '/jobpost') {
+      title.value = '구인등록'
+    } else if (currentPath === '/userprofile') {
+      title.value = '프로필'
+    }
+
+  });
+</script>
+  
 <style lang="scss" scoped>
   nav {
     position: relative;
+    // background: pink;
     border-bottom: 1px solid #ccc;
     width: 100%;
     height: 44px;
