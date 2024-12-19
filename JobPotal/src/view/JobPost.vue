@@ -1,6 +1,9 @@
 <template>
   <div class="form-container" v-if="isLogin">
-    <form>
+    <div class="loading_info" v-if="isLoading">
+      <p>포스트 중입니다...</p>
+    </div>
+    <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="title">제목</label>
         <input 
@@ -85,24 +88,27 @@
           <p class="title">사진(선택)</p>
           <figure>
             <Icon icon="mdi-light:camera" width="64" height="64"  style="color: #1e1e1e;" />
-            <img src="/box64.jpg" alt="미리보기" width="64" height="64" />
+            <img :src="previewImage ? previewImage : '/box64.jpg'" alt="미리보기" width="64" height="64" />
           </figure>
         </label>
-        <input type="file" id="photo" accept="image/*">
+        <input type="file" id="photo" accept="image/*" @change="onFileChange">
       </div>
+      <button class="btn-submit">등록하기</button>
     </form>
   </div>
 </template>
   
 <script setup>
-  import { ref, onMounted } from 'vue';
+import {ref, onMounted, onUnmounted} from 'vue';
   import { Icon } from '@iconify/vue';
   import { useRouter } from 'vue-router';
   import { useAuth} from "../auth/auth.js";
+import supabase from "../supabase.js";
 
   const router = useRouter();
   const { isLogin, user, checkLoginStatus} = useAuth()
 
+const isLoading = ref(false)
   const title = ref('');
   const todo = ref('');
   const pay_rule = ref('');
@@ -111,9 +117,46 @@
   const company_name = ref('');
   const location = ref('');
   const tel = ref('');
+  const previewImage = ref(null)
 
+const handleSubmit = async () => {
+  isLoading.value = true;
+
+  const { error } = await supabase
+      .from('job_posts')
+      .insert({
+        title: title.value,
+        todo: todo.value,
+        pay_rule: pay_rule.value,
+        pay: pay.value,
+        desc: desc.value,
+        company_name: company_name.value,
+        location: location.value,
+        tel: tel.value,
+        img_url: 'https://placehold.co/400x250',
+      })
+  if(error) {
+    alert(error.message || '등록 실패');
+  } else {
+    alert('등록 성공');
+    router.push('/job-list');
+  }
+
+  isLoading.value = false;
+}
+
+  const onFileChange =(e)=>{
+    const file = e.target.files[0]
+    if(file){
+      previewImage.value = URL.createObjectURL(file)
+    }
+  }
 onMounted(async()=>{
   await checkLoginStatus();
+  })
+
+  onUnmounted(()=>{
+    if (previewImage){    URL.revokeObjectURL(previewImage.value) }//메모리 누수 방지를 위해서
   })
 
 </script>

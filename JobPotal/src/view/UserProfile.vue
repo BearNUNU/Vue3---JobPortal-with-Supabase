@@ -22,9 +22,9 @@
 
   const router = useRouter();
   const isLogin = ref(false)
-  const name = ref('사용자 이름');
-  const address = ref('사용자 주소');
-  const introduce = ref('IT와 웹 개발에 대한 열정을 가진 개발자입니다. Vue.js와 JavaScript에 강점을 두고 있으며, 효율적인 코드와 창의적인 문제 해결에 집중합니다. 성장과 도전을 통해 더 나은 결과를 만들기 위해 노력하고 있습니다.')
+  const name = ref('');
+  const address = ref('');
+  const introduce = ref('')
 
 
   const handleLogout = async () => {
