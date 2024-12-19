@@ -48,7 +48,7 @@
           style="color: #1e1e1e;"
         />
       </router-link>
-      <router-link to="/jobpost">
+      <router-link to="/job-post">
         <Icon 
         icon="mdi:pencil-outline"  
           width="24"
