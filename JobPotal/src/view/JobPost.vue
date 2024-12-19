@@ -97,13 +97,12 @@
 <script setup>
   import { ref, onMounted } from 'vue';
   import { Icon } from '@iconify/vue';
-  import supabase from '../supabase';
   import { useRouter } from 'vue-router';
-  
+  import { useAuth} from "../auth/auth.js";
+
   const router = useRouter();
+  const { isLogin, user, checkLoginStatus} = useAuth()
 
-
-  const isLogin = ref(false); 
   const title = ref('');
   const todo = ref('');
   const pay_rule = ref('');
@@ -114,16 +113,7 @@
   const tel = ref('');
 
 onMounted(async()=>{
-  const { data: { user } } = await supabase.auth.getUser()
-  if(user){
-      console.log(user.email);  
-      isLogin.value = true
-  } else {
-    console.log('로그아웃 상태')
-    isLogin.value = false
-    alert('로그인 후 이용해주세요.')
-    router.push('/')
-  }
+  await checkLoginStatus();
   })
 
 </script>
