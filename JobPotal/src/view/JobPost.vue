@@ -1,28 +1,28 @@
 <template>
+  <div class="loading_info" v-if="isLoading">
+    <p>저장중...</p>
+  </div>
   <div class="form-container" v-if="isLogin">
-    <div class="loading_info" v-if="isLoading">
-      <p>포스트 중입니다...</p>
-    </div>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="title">제목</label>
-        <input 
-          type="text" 
-          id="title" 
-          required
-          placeholder="공고 내용을 요약해 주세요."
-          v-model="title"
+        <input
+            type="text"
+            id="title"
+            required
+            placeholder="공고 내용을 요약해 주세요."
+            v-model="title"
         >
       </div>
 
       <div class="form-group">
         <label for="todo">하는 일</label>
-        <input 
-          type="text" 
-          id="todo" 
-          v-model="todo"
-          placeholder="해야할 업무를 입력해주세요."
-          required
+        <input
+            type="text"
+            id="todo"
+            v-model="todo"
+            placeholder="해야할 업무를 입력해주세요."
+            required
         />
       </div>
 
@@ -33,50 +33,48 @@
           <label for="pay_rule1">시급</label>
           <label for="pay_rule2">월급</label>
         </div>
-        <input 
-          type="number" 
-          id="pay" 
-          placeholder="시급 또는 월급을 입력해주세요."
-          v-model="pay" 
-          required
+        <input
+            type="number"
+            id="pay"
+            placeholder="시급 또는 월급을 입력해주세요."
+            v-model="pay"
+            required
         >
       </div>
 
       <div class="form-group">
         <label for="desc">자세한 설명</label>
-        <textarea 
-          name="desc" 
-          id="desc" 
-          v-model="desc"
-          rows="4"
-          required
-          placeholder="구체적인 업무 내용, 근무여건, 지원자가 갖추어야 할 능력 등 우대 사항에 대해 알려주세요."
+        <textarea
+            name="desc"
+            id="desc"
+            v-model="desc"
+            rows="4"
+            required
+            placeholder="구체적인 업무 내용, 근무여건, 지원자가 갖추어야 할 능력 등 우대 사항에 대해 알려주세요."
         ></textarea>
       </div>
 
       <div class="form-group">
         <label for="company_name">업체명</label>
-        <input 
-          type="text" 
-          id="company_name" 
-          v-model="company_name" 
-          required
-          placeholder="예) 땅콩가게"
+        <input
+            type="text"
+            id="company_name"
+            v-model="company_name"
+            required
+            placeholder="예) 땅콩가게"
         >
       </div>
-
 
       <div class="form-group">
         <label for="location">위치</label>
-        <input 
-          type="text" 
-          id="location" 
-          v-model="location" 
-          required 
-          placeholder="예) 서울시 강남구 논현동"
+        <input
+            type="text"
+            id="location"
+            v-model="location"
+            required
+            placeholder="예) 서울시 강남구 논현동"
         >
       </div>
-
 
       <div class="form-group">
         <label for="tel">연락처</label>
@@ -88,40 +86,50 @@
           <p class="title">사진(선택)</p>
           <figure>
             <Icon icon="mdi-light:camera" width="64" height="64"  style="color: #1e1e1e;" />
-            <img :src="previewImage ? previewImage : '/box64.jpg'" alt="미리보기" width="64" height="64" />
+            <img :src="previewImage" alt="미리보기" width="64" height="64" v-if="previewImage" />
+            <img src="/box64.jpg" alt="미리보기" width="64" height="64" v-if="!previewImage" />
           </figure>
         </label>
-        <input type="file" id="photo" accept="image/*" @change="onFileChange">
+        <input
+            @change="onFileChange"
+            type="file" id="photo" accept="image/*">
       </div>
       <button class="btn-submit">등록하기</button>
     </form>
   </div>
 </template>
-  
+
 <script setup>
-import {ref, onMounted, onUnmounted, watch} from 'vue';
-  import { Icon } from '@iconify/vue';
-  import { useRouter } from 'vue-router';
-  import { useAuth} from "../auth/auth.js";
-import supabase from "../supabase.js";
+import { useAuth } from '../auth/auth';
+import { useRouter } from 'vue-router';
+import supabase from '../supabase';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { Icon } from '@iconify/vue';
 
-  const router = useRouter();
-  const { isLogin, user, checkLoginStatus} = useAuth()
+const { isLogin, user, checkLoginStatus } = useAuth();
+const router = useRouter();
+const isLoading = ref(false);
 
-const isLoading = ref(false)
-  const title = ref('');
-  const todo = ref('');
-  const pay_rule = ref('시급');
-  const pay = ref('');
-  const desc = ref('');
-  const company_name = ref('');
-  const location = ref('');
-  const tel = ref('');
-  const previewImage = ref(null)
+// 입력 항목
+const title = ref('');
+const todo = ref('');
+const pay_rule = ref('시급');
+const pay = ref('');
+const desc = ref('');
+const company_name = ref('');
+const location = ref('');
+const tel = ref('');
+const img_url = ref('');
 
+let file = null;
 
 const handleSubmit = async () => {
   isLoading.value = true;
+
+  if(previewImage.value) {
+    await uploadImage();
+  }
+
   const { error } = await supabase
       .from('job_posts')
       .insert({
@@ -133,7 +141,7 @@ const handleSubmit = async () => {
         company_name: company_name.value,
         location: location.value,
         tel: tel.value,
-        img_url: 'https://placehold.co/400x250',
+        img_url: img_url.value,
       })
   if(error) {
     alert(error.message || '등록 실패');
@@ -141,95 +149,120 @@ const handleSubmit = async () => {
     alert('등록 성공');
     router.push('/job-list');
   }
+
   isLoading.value = false;
 }
 
-  const onFileChange =(e)=>{
-    const file = e.target.files[0]
-    if(file){
-      previewImage.value = URL.createObjectURL(file)
-    }
+const previewImage = ref(null);
+
+const onFileChange = (e) => {
+  file = e.target.files[0];
+  console.log(file);
+
+  if(file) {
+    previewImage.value = URL.createObjectURL(file);
+    console.log(previewImage.value);
   }
-onMounted(async()=>{
+}
+
+const uploadImage = async () => {
+  const { data, error } = await supabase
+      .storage
+      .from('image')// 한글 이름 파일도 들어갈 수 있게 수정 필요
+      .upload(file.name, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+  if(error) {
+    alert('업로드 오류',error.message);
+  } else {
+    console.log('uploaded file:', data)
+    // 이미지 url 가져오기
+    const { data:imgData } = supabase
+        .storage
+        .from('image')
+        .getPublicUrl(file.name)
+    console.log('file url:', imgData.publicUrl)
+
+    img_url.value = imgData.publicUrl;
+  }
+
+}
+
+onMounted(async() => {
+
   await checkLoginStatus();
-  })
+})
 
-  onUnmounted(()=>{
-    if (previewImage){    URL.revokeObjectURL(previewImage.value) }//메모리 누수 방지를 위해서
-  })
-
+onUnmounted(() => {
+  console.log('unmounted');
+  // 메모리 누수 방지
+  if(previewImage.value) {
+    URL.revokeObjectURL(previewImage.value);
+  }
+})
 </script>
-  
+
 <style lang="scss" scoped>
-  @use "../style/form.scss";
+@use "../style/form.scss";
 
-  .form-container {
-    margin-top: 20px;
-    padding-bottom: 50px;
+.form-container {
+  margin-top: 20px;
+  padding-bottom: 50px;
 
-    .tab-group {
-      display: flex;
-      gap: 15px;
-      label { 
-        flex: 1;
-        border: 1px solid var(--main-color-dark);
-        border-radius: 8px;
-        text-align: center;
-        padding: 12px;
-      }
-    }
-
-    input[type="radio"] {
-        display: none;
-    }
-
-    input[type="radio"]:nth-child(1):checked ~ .tab-group label:nth-child(1) {
-      background: var(--main-color-dark);
-      color: #fff;
-    }
-
-    input[type="radio"]:nth-child(2):checked ~ .tab-group label:nth-child(2) {
-      background: var(--main-color-dark);
-      color: #fff;
-    }
-
-    #pay { margin-top: 8px;}
-
-    .form-group:has(label[for=photo]) input {
-      border: none;
-    }
-
-    label[for=photo] {
-      figure { 
-        display: flex; 
-        align-items: center;
-        img { 
-          border: 1px solid red;
-          margin-left: 30px; 
-        }
-      }
-    }
-    input[type="file"] {
-      display: none;
+  .tab-group {
+    display: flex;
+    gap: 15px;
+    label {
+      flex: 1;
+      border: 1px solid var(--main-color-dark);
+      border-radius: 8px;
+      text-align: center;
+      padding: 12px;
     }
   }
 
-  .btn-submit {
-    background: var(--main-color-light);
+  input[type="radio"] {
+    display: none;
   }
 
-  .form-group:has(label[for=photo]) {
-    padding-bottom: 25px;
-    border-bottom: 5px solid #ccc;
-  }
-
-  .loading_info {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0, 0.7);
+  input[type="radio"]:nth-child(1):checked ~ .tab-group label:nth-child(1) {
+    background: var(--main-color-dark);
     color: #fff;
-    display: grid;
-    place-items: center;
   }
+
+  input[type="radio"]:nth-child(2):checked ~ .tab-group label:nth-child(2) {
+    background: var(--main-color-dark);
+    color: #fff;
+  }
+
+  #pay { margin-top: 8px;}
+
+  .form-group:has(label[for=photo]) input {
+    border: none;
+  }
+  label[for=photo] {
+    figure {
+      display: flex;
+      align-items: center;
+      img {
+        border: 1px solid red;
+        margin-left: 30px;
+      }
+    }
+  }
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.btn-submit {
+  background: var(--main-color-light);
+}
+
+.form-group:has(label[for=photo]) {
+  padding-bottom: 25px;
+  border-bottom: 5px solid #ccc;
+}
 </style>
