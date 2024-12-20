@@ -3,7 +3,7 @@
     <h1>{{ title }}</h1>
     <router-link
         v-if="currentPath === '/signup'
-          || currentPath === '/job-post'"
+          || currentPath === '/job-post'|| currentPath.startsWith('/job-post-update')"
         to="/job-list"
         class="btn-close"
     >
@@ -74,6 +74,9 @@ watch(route, (newPath) => {
     title.value = '구인등록'
   } else if (currentPath === '/user-profile') {
     title.value = '프로필'
+  }
+  else if (currentPath.startsWith('/job-post-update')){
+    title.value = '구인등록 수정'
   }
 
 });

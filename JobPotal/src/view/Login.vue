@@ -10,7 +10,7 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" placeholder="Password" required v-model="password">
         <button type="submit">로그인</button>
-        <router-link to="/singup">회원가입</router-link>
+        <router-link to="/signup">회원가입</router-link>
     </form>
 </div>
 </div>

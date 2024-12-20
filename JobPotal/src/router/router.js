@@ -5,6 +5,7 @@ import JobList from '../view/JobList.vue';
 import JobDetail from '../view/JobDetail.vue';
 import JobPost from '../view/JobPost.vue';
 import UserProfile from '../view/UserProfile.vue';
+import JobPostUpdate    from "../view/JobPostUpdate.vue";
 
 const routes = [
     {
@@ -31,6 +32,10 @@ const routes = [
         path: '/user-profile',
         component: UserProfile
     },
+    {
+        path: '/job-post-update/:id',
+        component: JobPostUpdate
+    }
 ]
 
 const router = createRouter({
