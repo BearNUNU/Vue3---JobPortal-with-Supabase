@@ -1,10 +1,10 @@
 <template>
   <section v-if="isLogin">
-  <figure>
-    <img src="https://placehold.co/640x360" alt="head image">
-  </figure>
   <!-- 상세정보 -->
   <div class="container" v-if="post">
+    <figure>
+      <img :src="post.img_url" alt="head image">
+    </figure>
     <h2>{{post.title}}</h2>
     <p class="top_info">
       {{post.company_name}}
@@ -91,11 +91,23 @@ const handleApply = async () => {
   }
 
 // 지원이 완료되면 글목록으로 이동
-
 };
+const deleteImage = async ()=>{
+  if(post.value.img_url){
+    const {data, error} = await supabase
+        .storage
+        .from('image')
+        .remove([post.value.img_url.split('/'.pop())])
+    if (error){
+      console.log(error.message)
+    }
+  }
+}
+
 const handleDelete = async()=>{
   const conf = confirm('정말 삭제하시겠습니까?')
   if(!conf)return;
+  await deleteImage()
   const { error } = await supabase
       .from('job_posts')
       .delete()
@@ -135,7 +147,7 @@ figure {
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: scale-down;
   }
 }
 

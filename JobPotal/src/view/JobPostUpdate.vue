@@ -76,8 +76,6 @@
             placeholder="예) 서울시 강남구 논현동"
         >
       </div>
-
-
       <div class="form-group">
         <label for="tel">연락처</label>
         <input type="text" id="tel" v-model="tel" required placeholder="예) 010-1234-5678">
@@ -118,10 +116,15 @@ const company_name = ref('');
 const location = ref('');
 const tel = ref('');
 const previewImage = ref(null)
+const img_url = ref('')
+let file = null
 
 
 const handleSubmit = async () => {
   isLoading.value = true;
+  if(previewImage.value){
+    await uploadImage()
+  }
   const { error } = await supabase
       .from('job_posts')
       .update({
@@ -133,7 +136,7 @@ const handleSubmit = async () => {
         company_name: company_name.value,
         location: location.value,
         tel: tel.value,
-        img_url: 'https://placehold.co/400x250',
+        img_url: img_url.value,
       })
       .eq('id', route.params.id)
   if(error) {
@@ -146,12 +149,36 @@ const handleSubmit = async () => {
 }
 
 const onFileChange =(e)=>{
-  const file = e.target.files[0]
+   file = e.target.files[0]
   if(file){
     previewImage.value = URL.createObjectURL(file)
   }
 }
 
+const uploadImage = async () => {
+  const uniqueFileName = `${Date.now()}_${file.name}`; // supabase storage 파일 이름 중복을 막기 위해서
+  const { data, error } = await supabase
+      .storage
+      .from('image')// 한글 이름 파일도 들어갈 수 있게 수정 필요
+      .upload(uniqueFileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+  if(error) {
+    console.log(error.message)
+  } else {
+    console.log('uploaded file:', data)
+    // 이미지 url 가져오기
+    const { data:imgData } = supabase
+        .storage
+        .from('image')
+        .getPublicUrl(file.name)
+    console.log('file url:', imgData.publicUrl)
+
+    img_url.value = imgData.publicUrl;
+  }
+}
 
 const getPost =async () =>{
   const {data, error} = await supabase
@@ -168,7 +195,10 @@ const getPost =async () =>{
   location.value = data.location;
   tel.value = data.tel;
   previewImage.value = data.img_url;
+  prev_img_url.value = data.img_url;
 }
+
+
 onMounted(async()=>{
   await checkLoginStatus();
   getPost()

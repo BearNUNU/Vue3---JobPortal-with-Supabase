@@ -166,16 +166,17 @@ const onFileChange = (e) => {
 }
 
 const uploadImage = async () => {
+  const uniqueFileName = `${Date.now()}_${file.name}`; // supabase storage 파일 이름 중복을 막기 위해서
   const { data, error } = await supabase
       .storage
       .from('image')// 한글 이름 파일도 들어갈 수 있게 수정 필요
-      .upload(file.name, file, {
+      .upload(uniqueFileName, file, {
         cacheControl: '3600',
         upsert: false
       })
 
   if(error) {
-    alert('업로드 오류',error.message);
+    console.log(error.message)
   } else {
     console.log('uploaded file:', data)
     // 이미지 url 가져오기
@@ -187,7 +188,6 @@ const uploadImage = async () => {
 
     img_url.value = imgData.publicUrl;
   }
-
 }
 
 onMounted(async() => {
