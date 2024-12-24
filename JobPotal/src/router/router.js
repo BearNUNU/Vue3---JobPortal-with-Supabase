@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+// import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../view/Login.vue';
 import SignUp from '../view/SignUp.vue';
 import JobList from '../view/JobList.vue';
@@ -6,6 +6,7 @@ import JobDetail from '../view/JobDetail.vue';
 import JobPost from '../view/JobPost.vue';
 import UserProfile from '../view/UserProfile.vue';
 import JobPostUpdate    from "../view/JobPostUpdate.vue";
+import {createRouter, createWebHashHistory} from "vue-router";
 
 const routes = [
     {
@@ -39,7 +40,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 })
 
