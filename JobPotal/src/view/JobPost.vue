@@ -183,7 +183,7 @@ const uploadImage = async () => {
     const { data:imgData } = supabase
         .storage
         .from('image')
-        .getPublicUrl(file.name)
+        .getPublicUrl(uniqueFileName)
     console.log('file url:', imgData.publicUrl)
 
     img_url.value = imgData.publicUrl;
