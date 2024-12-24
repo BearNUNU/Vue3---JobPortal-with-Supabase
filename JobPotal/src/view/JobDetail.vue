@@ -2,8 +2,8 @@
   <section v-if="isLogin">
   <!-- 상세정보 -->
   <div class="container" v-if="post">
-    <figure>
-      <img :src="post.img_url" alt="head image">
+    <figure v-if="post.img_url">
+      <img   :src="post.img_url" alt="head image">
     </figure>
     <h2>{{post.title}}</h2>
     <p class="top_info">
