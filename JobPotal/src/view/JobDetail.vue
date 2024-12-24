@@ -89,15 +89,16 @@ const handleApply = async () => {
     alert('지원이 완료되었습니다.');
     router.push('/job-list');
   }
-
-// 지원이 완료되면 글목록으로 이동
 };
+
+
 const deleteImage = async ()=>{
   if(post.value.img_url){
+    const imagePath = post.value.img_url.split('/').pop();
     const {data, error} = await supabase
         .storage
         .from('image')
-        .remove([post.value.img_url.split('/'.pop())])
+        .remove([imagePath])
     if (error){
       console.log(error.message)
     }
@@ -107,7 +108,6 @@ const deleteImage = async ()=>{
 const handleDelete = async()=>{
   const conf = confirm('정말 삭제하시겠습니까?')
   if(!conf)return;
-  await deleteImage()
   const { error } = await supabase
       .from('job_posts')
       .delete()
@@ -116,6 +116,7 @@ const handleDelete = async()=>{
     alert('삭제 실패')
   }else {
     alert('삭제 완료')
+    await deleteImage()
     router.push('/job-list')
   }
 }
